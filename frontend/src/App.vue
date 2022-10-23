@@ -7,7 +7,8 @@ import Page_404 from "./views/page_404.vue";
   export default{
     components:{
     Page_404
-}
+  },
+  
   }
 </script>
 <style>

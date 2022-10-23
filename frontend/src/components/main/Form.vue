@@ -7,7 +7,7 @@
             <p>Метро</p>
             <select name="" id="">
                 <option value="">Не выбрано</option>
-                <option value="">Митино</option>
+                <option v-for="st in getMaetro[0]" value="">{{st.name}}</option>
             </select>
             <div style="width:100%;display:inline-flex;justify-content: space-evenly;align-items:center;flex-direction: column;align-content: space-between;">
                 <p style="margin-bottom: 5px;">До метро</p>
@@ -98,9 +98,16 @@
 </div>
 </template>
 <script>
-    import {mapMutations, mapGetters} from 'vuex'
+    import {mapMutations, mapGetters, mapActions} from 'vuex'
     export default{
-        methods: mapMutations(['Load', 'back', 'next']),
-        computed: mapGetters(['getStep'])
+        methods:{
+            ...mapMutations(['Load', 'back', 'next']),
+            ...mapActions(['loadMetroData']),
+        },
+        async mounted() {
+            this.loadMetroData(1)
+        },
+        computed: mapGetters(['getStep', 'getMaetro']),
+        
     }
 </script>
