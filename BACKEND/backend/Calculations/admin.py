@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from Calculations.models import FileData, NumStreet
+
+admin.site.register(FileData)
+admin.site.register(NumStreet)
