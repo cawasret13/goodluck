@@ -5,8 +5,13 @@ export default createStore({
     open: false,
     step: 0,
     metro:[],
+    region:[],
+    id_user: '1oo2j33211j'
   },
   getters: {
+    getIdUser(state){
+      return state.id_user
+    },
     getOpenForm(state){
       return state.open
     },
@@ -15,6 +20,9 @@ export default createStore({
     },
     getMaetro(state){
       return state.metro
+    },
+    getRegion(state){
+      return state.region
     }
   },
   mutations: {
@@ -32,7 +40,9 @@ export default createStore({
     },
     loadMetro(state, data){
       state.metro.push(data)
-      console.log(state.metro);
+    },
+    loadRegion(state, data){
+      state.region.push(data)
     }
   },
   actions: {
@@ -42,7 +52,14 @@ export default createStore({
      );
      const list = await res.json();
      ctx.commit('loadMetro', list)
-   }
+   },
+   async loadRegionData(ctx){
+    const res = await fetch(
+     `http://127.0.0.1:8000/api/v1/region/` 
+   );
+   const list = await res.json();
+   ctx.commit('loadRegion', list)
+ }
   },
   modules: {
   }

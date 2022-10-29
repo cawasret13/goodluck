@@ -1,0 +1,98 @@
+body{
+    margin: 0;
+    background-color: rgb(230, 230, 230);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.menu{
+    width: 15%;
+    height: 100%;
+    padding: 2%;
+    background-color: rgb(213, 213, 213);
+}
+.content{
+    width: 85%;
+    height: 100%;
+    padding: 2%;
+}
+.d_menu{
+    width: 100%;
+    min-height: 200px;
+    height: 100%;
+}
+.flex{
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+}
+.controll{
+    width: 98%;
+    padding: 1%;
+    background-color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 30px;
+    box-shadow: 0 0 8px #00000026;
+}
+.inf_user img{
+    width: 50px;
+    height: 50px;
+}
+.inf_user{
+    display: inline-flex;
+    align-items: center;
+}
+.inf_user p{
+    margin-left: 10px;
+    font-size: 15px;
+    font-weight: 700;
+}
+.button_place button{
+    width: 200px;
+    height: 50px;
+    border: 0;
+    border-radius: 16px;
+    color: white;
+    font-size: 16px;
+    background-color: #b9b9b9;
+    cursor: pointer;
+}
+.res{
+    padding: 2%;
+}
+.list{
+    width: 100%;
+    height: auto;
+    min-height: 50px;
+    background-color: #fff;
+    border-radius: 13px;
+    box-shadow: 0 0 8px #00000026;
+    display: inline-flex;
+    justify-content: space-between;
+    padding: 1%;
+    font-size: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.list h4{
+    margin: 0;
+    width: 8.5%;
+    text-align: center;
+}
+.size_min{
+    font-size: 10px;
+}
+.size_min h4{
+    width: 9%;
+}
+.on{
+    background-color: aquamarine;
+}
+.f{
+    background-color: #fff;
+}
+.at_house{
+    width: 100%;
+    min-height: 250px;
+    background-color: #fff;
+}
