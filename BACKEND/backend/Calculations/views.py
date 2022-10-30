@@ -1,10 +1,11 @@
+import json
 from random import random
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from Calculations.models import FileData
 import random
 import openpyxl
-from Calculations.selectionAnalogues import AnalogsMirCvartir, AnalogsMove
+from Calculations.selectionAnalogues import AnalogsMirCvartir, AnalogsMove, sortingAnalogs, test
 
 
 class LoadFile(APIView):
@@ -12,7 +13,7 @@ class LoadFile(APIView):
         id_session = ''
         for x in range(32):
             id_session = id_session + random.choice(
-                list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM/*-+.{}[]|'))
+                list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_|'))
         pr = FileData(
             file=request.data.get('file'),
             id_user=request.data.get('id_user'),
@@ -41,7 +42,7 @@ def read_open(id_session):
         if (worksheet.cell(row=y, column=1).value != None):
             data = {
                 "id_Apart": id,
-                "location": worksheet.cell(row=y, column=1).value,
+                "location": worksheet.cell(row=y, column=1).value+'.',
                 "numRooms": worksheet.cell(row=y, column=2).value,
                 "segment": worksheet.cell(row=y, column=3).value,
                 "floorsHouse": worksheet.cell(row=y, column=4).value,
@@ -75,8 +76,14 @@ class selectionAnalogs(APIView):
 
     def get(self, request, format=None):
         Apart = []
+        GlobalApart = []
         id_session = self.request.query_params.get('id_session')
-        id_session = '3koY4sacdBVbIAZM5WdQBI/7fweItBKg'
-        Apart.append({"analog":AnalogsMirCvartir(id_session)})
-        Apart.append({"analog":AnalogsMove(id_session)})
-        return Response(Apart)
+        # id_session = '3koY4sacdBVbIAZM5WdQBI/7fweItBKg'
+        # Apart.append({"analog":AnalogsMirCvartir(id_session)})
+        Apart.append({"analog":test(id_session)})
+        for analog in Apart:
+            for info in analog["analog"]:
+                GlobalApart.append(info)
+        return Response(json.dumps(sortingAnalogs(GlobalApart, id_session)))
+
+
