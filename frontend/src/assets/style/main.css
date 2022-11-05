@@ -1,0 +1,36 @@
+.content{
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+}
+.menu_c{
+    width: 15%;
+    height: 100%;
+}
+.workplace{
+    width: 85%;
+    height: 100%;
+}
+.load{
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #0780f4;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,13 +1,24 @@
 <template>
-    <div>
-        <Head_and_forms />
+    <div v-if="getLoad"  class="load">
+        <div class="loader"></div>
+    </div>
+    <div v-if="getLoad == false">
+        <menuUser />
+        <work />
     </div>
 </template>
 <script>
-import Head_and_forms from '@/components/main/head_and_forms.vue';
+    import menuUser from '../components/main/menu.vue'
+    import work from '../components/main/work.vue'
+    import { mapGetters } from 'vuex';
     export default{
-        components:{
-    Head_and_forms
-}
+        components:{    
+            menuUser,
+            work
+        },
+        computed: mapGetters(['getLoad'])
     }
 </script>
+<style scoped>
+    @import url('../assets/style/main.css')
+</style>

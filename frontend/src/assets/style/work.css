@@ -1,0 +1,143 @@
+.work{
+    width: 60%;
+    margin: auto;
+    margin-top: 15px;
+}
+.loadfile{
+    width: 98.5%;
+    margin-top: 20%;
+    height: 50px;
+    padding: 1%;
+    background-color: #fff;
+    border-radius: 13px;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 8px;
+    box-shadow: 0 0 7px 1px #00000024;
+}
+
+.input__wrapper {
+    width: 200px;
+    position: relative;
+    text-align: center;
+  }
+   
+  .input__file {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+  }
+   
+  .input__file-icon-wrapper {
+    height: 60px;
+    width: 60px;
+    margin-right: 15px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    border-right: 1px solid #fff;
+  }
+   
+  .input__file-button-text {
+    line-height: 1;
+    margin-top: 1px;
+  }
+   
+  .input__file-button {
+    max-width: 290px;
+    height: 60px;
+    background: #0780f4;
+    background: linear-gradient(to bottom right, #53a9f9, #0780f4);
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    cursor: pointer;
+    border-radius: 13px;
+  }
+
+  .no_file{
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 13px;
+    box-shadow: 0 0 7px 1px #00000024;
+  }
+  .instruction{
+    width: 98%;
+    padding: 1%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+  }
+  .h4_title{
+    font-size: 18px;
+    text-align: center;
+    color: #0780f4;
+    width: 100%;
+  }
+  .ls_instruction{
+    padding: 1%;
+    background-color: #f3f3f3;
+    border-bottom-left-radius: 13px;
+    border-bottom-right-radius: 13px;
+    box-shadow: inset 0 3px 0 #0000000d;
+  }
+  .ls_instruction p{
+    color: #0780f4;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .step{
+    width: 30px;
+    height: 30px;
+    color: white;
+    background-color: #0780f4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3%;
+    font-weight: 800;
+  }
+  .cell{
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .cell span{
+    margin-right: 40px;
+  }
+  .send_file{
+    margin-top: 15px;
+    border-radius: 13px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .send_file button{
+    width: 260px;
+    height: 60px;
+    border-radius: 13px;
+    cursor: pointer;
+    background: linear-gradient(to bottom right, #53a9f9, #0780f4);
+    color: white;
+    font-size: 20px;
+    border: 0;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <div class="flex" v-on:scroll="this.full=null">
         <div class="menu">
             <div class="d_menu">
                 dlsdjlakjsfl
@@ -15,18 +15,20 @@
                     <button>Импорт</button>
                 </div>                
             </div>
-            <div class="at_house" v-if="this.selectHouse != null">
+            <div class="at_house" v-if="this.selectHouse.length != 0">
                 <h2>Эталон</h2>
                 <h4>{{this.selectHouse}}</h4>
                 <button v-on:click="r">Показать аналоги</button>
-                <h3 v-if="this.list_analogs != null" style="text-align: center;">Мы нашли {{this.list_analogs.length-1}} аналог(ов)</h3>
-                <div class="list_analods">
-                    <div v-for=" (info, index_arr) in this.list_analogs" class="analog">
+                <h3 v-if="this.list_analogs.length != 0" style="text-align: center;">Мы нашли {{this.list_analogs.length}} аналог(ов)</h3>
+                <div class="list_analods" v-for="house in list_analogs">
+                    <div v-for=" (info, index_arr) in house['resualt']['data']" class="analog" v-bind:class="this.full == index_arr?'full_screen':''">
                         <div class="photo">
                             <div class="div_photo" v-bind:class="getPhoto(info['info']['id']) != index?'none':' '" v-for="(photos, index) in JSON.parse(info['photo'])" style="background:url(); backdrop-filter:blur(5px)">
                                 <img  :data-index="index" class="img" :src="photos" alt="">
                                 <img  :data-index="index" class="back_img" :src="photos" alt="">
                             </div>
+                            <button v-if="this.full != index_arr" class="full_button" v-on:click="this.full = index_arr">full</button>
+                            <button v-if="this.full == index_arr" class="full_button" v-on:click="this.full = null">no full</button>
                             <div class="bar_photo"><div class="br_text"><h5>{{this.photo[info['info']['id']]+1}}/{{JSON.parse(info['photo']).length}}</h5></div></div>
                             <div class="contr_img">
                                 <button v-on:click="backPhoto(info['info']['id'])">
@@ -38,25 +40,26 @@
                             </div>
                         </div>
                         <div class="information">
-                            <div class="character"><h4>Цена</h4><h4>{{info["info"]["price"]}}₽</h4></div>
-                            <div class="character"><h4>Комнаты</h4><h4>{{info["info"]["rooms"]}}</h4></div>
-                            <div class="character"><h4>Этаж</h4><h4>{{info["info"]["floor"]}}/{{info["info"]["totalFloor"]}}</h4></div>
-                            <div class="character"><h4>Площадь общая</h4><h4>{{info["info"]["area"]}} м²</h4></div>
-                            <div class="character"><h4>Площадь кухни</h4><h4>{{info["info"]["areaKitchen"]}} м²</h4></div>
-                            <div class="character"><h4>Балкон</h4><h4>{{info["info"]["balcony"]}}</h4></div>
-                            <div class="character"><h4>Ремонт</h4><h4>{{info["info"]["repair"]}}</h4></div>
-                            <div class="character"><h4>Дом</h4><h4>{{info["info"]["typeHouse"]}}</h4></div>
+                            
+                            <a :href="info['info']['s']">Источник</a>
                         </div>
                         <button v-if="getAnalog(info['info']['id']) == false" v-on:click="addAnalog(info['info']['id'])">Выбрать</button>
                         <button v-else v-on:click="addAnalog(info['info']['id'])">Убрать</button>
                     </div>
+                    <br>
                 </div>
-                <button v-if="this.selectAnalog.length >=3">Рассчитать</button>
+                <button v-if="this.selectAnalog.length >=3" v-on:click="report">Рассчитать</button>
             </div>
 
             <div v-if="this.flag == 0">
-                <h4 style="text-align: center; margin-top: 20%;color: #959595;">Загрузите файл</h4>
-                    <input type="file" id="file" ref="file" accept=".xls, .xlsx" v-on:change="handleFileUpload()">
+                <!-- <h4 style="text-align: center; margin-top: 20%;color: #959595;">Загрузите файл</h4> -->
+                <div class="file_load">
+                    <label for="file">
+                        <input type="file" id="file" ref="file" accept=".xls, .xlsx" v-on:change="handleFileUpload()">
+                        <h1>load</h1>
+                    </label>
+                </div>
+                    
                     <button v-on:click="submitFile">Отправить</button>
                 <h1> file {{this.file.name}}</h1>
             </div>
@@ -91,7 +94,7 @@
                     <h4>{{obj["proxMetro"]}}</h4>
                     <h4>{{obj["structure"]}}</h4>
                     <!-- <input type="radio" :value="location" name="contact" v-model="selectHouse"> -->
-                    <input type="radio" name="sel_house" v-on:change="selectHouseValue(obj.id_Apart)">
+                    <input type="checkbox" name="sel_house" v-on:change="selectHouseValue(obj.id_Apart)">
                 </div>
             </div>
            
@@ -109,13 +112,13 @@ import {mapGetters} from 'vuex'
             return{
                 file: '',
                 list:'',
-                selectHouse:null,
+                selectHouse:[],
                 flag:0,
                 id_session:'',
-                list_analogs:null,
+                list_analogs:[],
                 selectAnalog:[],
                 photo:[],
-
+                full: null,
             }
         },
         methods: {
@@ -144,17 +147,33 @@ import {mapGetters} from 'vuex'
             }
             console.log(this.selectAnalog)
         },
+        async report(){
+            this.flag = true
+                let formData = new FormData();
+                formData.append('ids_analogs', this.selectAnalog);
+                formData.append('id_session', this.id_session);
+                fetch('http://localhost:8000/api/v1/calc/report',{
+                    method: "POST",
+                    body: formData,
+                })
+        },
         async r(){
             fetch(`http://localhost:8000/api/v1/ref?id_session=`+this.id_session).then(req=>req.json()).then(info=>{
                 this.list_analogs = JSON.parse(info)
-                for (var index = 0; index < this.list_analogs.length; index++){
-                    this.photo[this.list_analogs[index]['info']["id"]] = 0
-                } 
+                console.log(this.list_analogs)
+                // for (var index = 0; index < this.list_analogs.length; index++){
+                //     this.photo[this.list_analogs[index]['info']["id"]] = 0
+                // } 
             })
         },
         
          selectHouseValue(id){
-            this.selectHouse = id
+            if(this.selectHouse.includes(id)){
+                let index = this.selectHouse.indexOf(id)
+                this.selectHouse.splice(index, 1)
+            }else{
+                this.selectHouse.push(id)
+            }
             this.SendReferents()
         },
         submitFile(){
