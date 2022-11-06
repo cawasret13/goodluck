@@ -1,7 +1,7 @@
 <template>
     <div v-if="getAnalog.length >= 3 * getAnalogues.length" class="controll" style="justify-content: space-between;z-index: 2;">
         <h3>Мы готовы начать рассчитывать цену для эталонов</h3>
-        <button>Рассчитать</button>
+        <button v-on:click="report">Рассчитать</button>
     </div>
     <h2 class="h4_title">Аналоги ({{getAnalog.length}} шт.)</h2>
     <div class="anal">
@@ -17,7 +17,6 @@
             :pagination="{ clickable: true }"
             v-for="obj in getAnalogues"
         >
-            <!-- <h3>{{obj['resualt']['id']}}</h3> -->
             <swiper-slide class="cell_ana" v-for="info in obj['resualt']['data']">
                 <div class="photo">
                     <swiper
@@ -32,6 +31,7 @@
                     </swiper>
                 </div>
                 <div class="info">
+                    <div class="character"><h4>id</h4><h4>{{info["info"]["id"]}}</h4></div>
                     <div class="character"><h4>Адрес</h4><h4>{{info["info"]["address"]}}</h4></div>
                     <div class="character"><h4>Цена</h4><h4>{{info["info"]["price"]}}₽</h4></div>
                     <div class="character"><h4>Комнаты</h4><h4>{{info["info"]["rooms"]}}</h4></div>
@@ -50,7 +50,7 @@
     </div>
 </template>
 <script>
-    import { mapGetters, mapMutations } from 'vuex';
+    import { mapGetters, mapMutations , mapActions} from 'vuex';
     import SwiperClass, { Pagination , Navigation } from 'swiper'
     import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
     import 'swiper/css'
@@ -59,7 +59,8 @@
     export default{
         computed: mapGetters(['getAnalogues', 'getAnalog']),
         methods:{
-            ...mapMutations(['addAnalog', ])
+            ...mapMutations(['addAnalog', ]),
+            ...mapActions(['report'])
         },
         components:{
             Swiper,

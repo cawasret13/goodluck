@@ -7,6 +7,7 @@ export default{
         selectReference:[],
         list_analogs:[],
         selectAnalog:[],
+        history:[],
         url: 'http://localhost:8000',
     },
     getters:{
@@ -30,7 +31,13 @@ export default{
         },
         getAnalog(state){
             return state.selectAnalog
-        }
+        },
+        getHistory(state){
+            return state.history
+        },
+        getInfoReference: (state) => (id) => {
+            return state.dataFile.find(thing => thing.id === id)
+        },
     },
     mutations:{
         LoadFile(state, file){
@@ -70,10 +77,11 @@ export default{
     actions:{
         async loadFile(ctx, file){
             if( file != ''){
+                let _url = ctx.state.url+'/api/v1/calc'
                 let formData = new FormData();
                 formData.append('file', file);
                 formData.append('id_user', '11k,w1k1o');
-                fetch(ctx.state.url + "/api/v1/calc",{
+                fetch(_url,{
                     method: "POST",
                     body: formData
                 }).then(data=>data.json()).then(save=>{
@@ -108,6 +116,19 @@ export default{
                     ctx.state.load = false
                 })
             }
+        },
+        async report(ctx){
+            console.log(ctx.state.selectAnalog, ctx.state.id_session)
+            let formData = new FormData();
+                formData.append('ids_analogs', ctx.state.selectAnalog);
+                formData.append('id_session', ctx.state.id_session);
+                fetch('http://localhost:8000/api/v1/calc/report',{
+                    method: "POST",
+                    body: formData,
+            }).then(res => res.json()).then(data => {
+                console.log(JSON.parse(data))
+                ctx.state.history = JSON.parse(data)
+            })
         }
     }
 }

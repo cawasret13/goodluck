@@ -1,0 +1,58 @@
+.resualt{
+    width: 60%;
+    margin: auto;
+}
+.obj{
+    margin-top: 1%;
+    padding: 1%;
+    border-radius: 13px;
+    box-shadow: 0 0 4px #00000036;
+}
+.obj h3{
+    margin: 0;
+}
+.analogue{
+    padding: 1%;
+    width: 96%;
+    margin: 1%;
+    box-shadow: 0 0 6px 1px #00000040;
+    border-radius: 13px;
+}
+.analogue h1{
+    margin-top: 0;
+    cursor: pointer;
+}
+.char{
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+}
+.h_d{
+    text-align: start;
+}
+.h_c{
+    text-align: center;
+}
+.h_e{
+    text-align: end;
+}
+.char h3{
+    width: 33%;
+    font-size: 14px;
+}
+.ls_cof{
+    margin: 1%;
+    padding: 1%;
+    margin-top: 2%;
+    border-radius: 13px;
+}
+.price{
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+    margin-bottom: 1%;
+}
+.price h3{
+    width: 50%;
+    text-align: center;
+}
