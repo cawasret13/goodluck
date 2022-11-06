@@ -12,6 +12,10 @@ export default{
         report: [],
     },
     getters:{
+        geExportFile(state){
+            let url  = "http://localhost:8000/static/Export_"+state.id_session+".xlsx"
+            return url
+        },
         getLoad(state){
             return state.load
         },
@@ -58,7 +62,6 @@ export default{
         },
         loadSession(state, id){
             state.id_session = id
-            console.log(id, state.id_session)
         },
         addReference(state, id){
             if(state.selectReference.includes(id)){
@@ -75,7 +78,6 @@ export default{
             }else{
                 state.selectAnalog.push(id)
             }
-            console.log(state.selectAnalog)
         },
         NewHistory(state, data){
             state.history = data
@@ -136,7 +138,6 @@ export default{
                     method: "POST",
                     body: formData,
             }).then(res => res.json()).then(data => {
-                console.log(JSON.parse(data))
                 ctx.state.history = JSON.parse(data)
             })
         }

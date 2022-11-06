@@ -94,4 +94,10 @@
     border-radius: 13px;
     border: 0;
     padding: 1%;
+    text-decoration: none;
+    width: 100px;
+    height: 40px;
+}
+.report a{
+    text-decoration: none;
 }

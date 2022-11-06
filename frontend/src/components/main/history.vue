@@ -33,7 +33,7 @@
         <div v-else>
             <div class="report">
                 <h1>Отчет</h1>
-                <button v-on:click="CalcPool(getSession)">Скачать</button>
+                <a :href="geExportFile"><button>Скачать</button></a>
             </div>
             <div class="list">
         <div class="onj_ls">
@@ -74,7 +74,7 @@
     import { val } from 'dom7';
 import { mapGetters, mapMutations } from 'vuex';
     export default{
-        computed: mapGetters(['getHistory', 'getInfoReference', 'getSession', 'getReport']),
+        computed: mapGetters(['getHistory', 'getInfoReference', 'getSession', 'getReport', 'geExportFile']),
         data(){
             return{
                 newCoef:0
