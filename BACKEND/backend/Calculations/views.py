@@ -16,7 +16,7 @@ class LoadFile(APIView):
         id_session = ''
         for x in range(32):
             id_session = id_session + random.choice(
-                list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_|'))
+                list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_'))
         pr = FileData(
             file=request.data.get('file'),
             id_user=request.data.get('id_user'),

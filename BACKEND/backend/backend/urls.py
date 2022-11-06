@@ -4,6 +4,7 @@ from rest_framework.routers import SimpleRouter
 
 from Calculations.views import LoadFile, selectionAnalogs, Calculation, ChangeCoef, CalculationsPool
 from db.views import MetroView, RegionView
+from personal_area.views import createUser, GetUser
 
 router = SimpleRouter()
 
@@ -15,6 +16,9 @@ urlpatterns = [
     path('api/v1/ref', selectionAnalogs.as_view()),
     path('api/v1/calc/report', Calculation.as_view()),
     path('api/v1/change/coefficient', ChangeCoef.as_view()),
-    path('api/v1/calc/pool', CalculationsPool.as_view())
+    path('api/v1/calc/pool', CalculationsPool.as_view()),
+    path('api/v1/user/register', createUser.as_view()),
+    path('api/v1/user', GetUser.as_view()),
+
 ]
 urlpatterns += router.urls

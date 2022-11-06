@@ -1,7 +1,7 @@
 import ast
 import random
 import openpyxl
-from openpyxl.utils import get_column_letter
+from openpyxl.styles import PatternFill, Alignment
 from soupsieve.util import lower
 from Calculations.models import FileData
 
@@ -46,8 +46,34 @@ def createFile(id_session):
     sheet["J1"] = "Удаленность от станции метро, мин. пешком"
     sheet["K1"] = "Состояние"
     sheet["L1"] = "Цена"
+
     r = 2
-    sheet.
+    sheet.column_dimensions['A'].width = 30
+    sheet.column_dimensions['B'].width = 10
+    sheet.column_dimensions['C'].width = 30
+    sheet.column_dimensions['D'].width = 30
+    sheet.column_dimensions['E'].width = 30
+    sheet.column_dimensions['F'].width = 30
+    sheet.column_dimensions['G'].width = 30
+    sheet.column_dimensions['H'].width = 30
+    sheet.column_dimensions['I'].width = 30
+    sheet.column_dimensions['J'].width = 30
+    sheet.column_dimensions['K'].width = 30
+    sheet.column_dimensions['L'].width = 30
+
+    sheet['A1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['B1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['C1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['D1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['E1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['F1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['G1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['H1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['I1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['J1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['K1'].fill = PatternFill('solid', fgColor="bdc3c7")
+    sheet['L1'].fill = PatternFill('solid', fgColor="bdc3c7")
+
     for cell in ast.literal_eval(dataFIle.NewData):
         sheet[r][0].value =cell["location"]
         sheet[r][1].value =cell["numRooms"]
@@ -62,7 +88,12 @@ def createFile(id_session):
         sheet[r][10].value =cell["structure"]
         sheet[r][11].value =cell["price"]
         r+=1
+    name = f"static/Export_{id_session.replace('|', '')}.xlsx"
+    print(name, id_session)
+    book.save(name)
 
-    file = book.save(f"static/Export_{id_session.replace('|', '')}.xlsx")
     book.close()
-
+    s = FileData.objects.get(id_session = id_session)
+    s.EndPool = name
+    s.save()
+    return 0

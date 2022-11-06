@@ -371,6 +371,6 @@ def Pool(id_session):
                 _objects.append(file)
 
     data.NewData = _objects
-    data.EndPool = createFile(id_session)
     data.save()
+    q = createFile(id_session)
     return _objects
