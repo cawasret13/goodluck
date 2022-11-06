@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
-from Calculations.views import LoadFile, selectionAnalogs, Calculation
+from Calculations.views import LoadFile, selectionAnalogs, Calculation, ChangeCoef
 from db.views import MetroView, RegionView
 
 router = SimpleRouter()
@@ -14,5 +14,6 @@ urlpatterns = [
     path('api/v1/calc', LoadFile.as_view()),
     path('api/v1/ref', selectionAnalogs.as_view()),
     path('api/v1/calc/report', Calculation.as_view()),
+    path('api/v1/change/coefficient', ChangeCoef.as_view())
 ]
 urlpatterns += router.urls

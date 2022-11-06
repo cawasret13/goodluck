@@ -1,17 +1,23 @@
 import ast
+
+from Calculations.LibSB import generateID
 from Calculations.models import FileData
 
 
-def calculate_price(id_session):
+def calculate_price(id_session, id_reference, ids_analogues):
     _report = report = []
+    print(ids_analogues)
     Analog_Info = FileData.objects.filter(id_session=id_session)[0]
     data = ast.literal_eval(Analog_Info.data_analogs)
-    reference = ast.literal_eval(Analog_Info.data)[Analog_Info.id_reference]
-    for id_analog in ast.literal_eval(Analog_Info.ids_analogs):
-        for obj in data:
-            if int(obj["info"]["id"]) == int(id_analog):
-                price = int(int(obj["info"]["price"]) / float(obj["info"]["area"]))
-                _report.append(calc_coeff(price, obj["info"], reference))
+    reference = ast.literal_eval(Analog_Info.data)[id_reference]
+    _flag=[]
+    for id_analog in ids_analogues:
+        for _obj in data:
+            for obj in _obj['resualt']['data']:
+                if int(obj["info"]["id"]) == int(id_analog) and int(int(obj["info"]["id"]) not in _flag):
+                    price = int(int(obj["info"]["price"]) / float(obj["info"]["area"]))
+                    _report.append(calc_coeff(price, obj["info"], reference))
+                    _flag.append(int(obj["info"]["id"]))
     _weight = 0
     for analogue_weight in _report:
         _weight += (1 / analogue_weight["size"])
@@ -27,17 +33,20 @@ def calculate_price(id_session):
     for price in _report:
         priceMeter += price['weight'] * price['price']
     report = {
+        "id_ref": id_reference,
+        "id_a": ids_analogues,
         "report": _report,
-        "priceMeter": priceMeter,
-        "price": priceMeter * float(obj["info"]["area"]),
+        "priceMeter": int(priceMeter),
+        "price": int(int(priceMeter) * float(obj["info"]["area"])),
     }
     return report
 
 
 def calc_coeff(_price, analogue, reference):
+    print(analogue)
     price = _price - (4.5 * _price / 100)
     history = []
-    history.append({"id":analogue["id"], "discription": "Корректировка на торг", "price": int(_price), "coef": -4.5})
+    history.append({"id": generateID(), "discription": "Корректировка на торг", "price": int(_price), "coef": -4.5})
     coef = 0
     if int(reference["floorsHouse"]) == int(reference["floor"]):
         if analogue["totalFloor"] == 1:
@@ -61,7 +70,7 @@ def calc_coeff(_price, analogue, reference):
         else:
             coef = 0
     price = price + (coef * price / 100)
-    history.append({"id":analogue["id"], "discription": "Корректировка на этаж квартиры", "price": int(price), "coef": coef})
+    history.append({"id": generateID(), "discription": "Корректировка на этаж квартиры", "price": int(price), "coef": coef})
     area_ref = float(reference["areaApart"])
     area_ana = float(analogue["area"])
     if area_ref < 30:
@@ -143,7 +152,7 @@ def calc_coeff(_price, analogue, reference):
         elif area_ana > 120:
             coef = 0
     price = price + (coef * price / 100)
-    history.append({"id":analogue["id"], "discription": "Корректировка на площадь", "price": int(price), "coef": coef})
+    history.append({"id": generateID(), "discription": "Корректировка на площадь", "price": int(price), "coef": coef})
     area_ref = float(reference["areaKitchen"])
     area_ana = float(analogue["areaKitchen"])
     if area_ref < 7:
@@ -168,7 +177,7 @@ def calc_coeff(_price, analogue, reference):
         elif area_ana > 10 and area_ana <= 15:
             coef = 0
     price = price + (coef * price / 100)
-    history.append({"id":analogue["id"], "discription": "Корректировка на площадь кухни", "price": int(price), "coef": coef})
+    history.append({"id": generateID(), "discription": "Корректировка на площадь кухни", "price": int(price), "coef": coef})
     if (reference["balcony"]).lower() == 'да':
         if (analogue["balcony"]).lower() == 'да':
             coef = 0
@@ -180,88 +189,88 @@ def calc_coeff(_price, analogue, reference):
         else:
             coef = 0
     price = price + (coef * price / 100)
-    history.append({"id":analogue["id"], "discription": "Корректировка на наличие балкона/лоджии", "price": int(price), "coef": coef})
-
-    if reference["proxMetro"] < 5:
-        if analogue["time"] < 5:
+    history.append({"id": generateID(), "discription": "Корректировка на наличие балкона/лоджии", "price": int(price), "coef": coef})
+    time = int(analogue["time"])
+    if int(reference["proxMetro"]) < 5:
+        if time < 5:
             coef = 0
-        elif analogue["time"] > 5 and analogue["time"] <= 10:
+        elif time > 5 and time <= 10:
             coef = 7
-        elif analogue["time"] > 10 and analogue["time"] <= 15:
+        elif time > 10 and time <= 15:
             coef = 12
-        elif analogue["time"] > 15 and analogue["time"] <= 30:
+        elif time > 15 and time <= 30:
             coef = 17
-        elif analogue["time"] > 30 and analogue["time"] <= 60:
+        elif time > 30 and time <= 60:
             coef = 24
-        elif analogue["time"] > 60 and analogue["time"] <= 90:
+        elif time > 60 and time <= 90:
             coef = 29
-    elif reference["proxMetro"] > 5 and reference["proxMetro"] <= 10:
-        if analogue["time"] < 5:
+    elif int(reference["proxMetro"]) > 5 and int(reference["proxMetro"]) <= 10:
+        if time < 5:
             coef = -7
-        elif analogue["time"] > 5 and analogue["time"] <= 10:
+        elif time > 5 and time <= 10:
             coef = 0
-        elif analogue["time"] > 10 and analogue["time"] <= 15:
+        elif time > 10 and time <= 15:
             coef = 4
-        elif analogue["time"] > 15 and analogue["time"] <= 30:
+        elif time > 15 and time <= 30:
             coef = 9
-        elif analogue["time"] > 30 and analogue["time"] <= 60:
+        elif time > 30 and time <= 60:
             coef = 15
-        elif analogue["time"] > 60 and analogue["time"] <= 90:
+        elif time > 60 and time <= 90:
             coef = 20
-    elif reference["proxMetro"] > 10 and reference["proxMetro"] <= 15:
-        if analogue["time"] < 5:
+    elif int(reference["proxMetro"]) > 10 and int(reference["proxMetro"]) <= 15:
+        if time < 5:
             coef = -11
-        elif analogue["time"] > 5 and analogue["time"] <= 10:
+        elif time > 5 and time <= 10:
             coef = -4
-        elif analogue["time"] > 10 and analogue["time"] <= 15:
+        elif time > 10 and time <= 15:
             coef = 0
-        elif analogue["time"] > 15 and analogue["time"] <= 30:
+        elif time > 15 and time <= 30:
             coef = 5
-        elif analogue["time"] > 30 and analogue["time"] <= 60:
+        elif time > 30 and time <= 60:
             coef = 11
-        elif analogue["time"] > 60 and analogue["time"] <= 90:
+        elif time > 60 and time <= 90:
             coef = 15
-    elif reference["proxMetro"] > 15 and reference["proxMetro"] <= 30:
-        if analogue["time"] < 5:
+    elif int(reference["proxMetro"]) > 15 and int(reference["proxMetro"]) <= 30:
+        if time < 5:
             coef = -15
-        elif analogue["time"] > 5 and analogue["time"] <= 10:
+        elif time > 5 and time <= 10:
             coef = -8
-        elif analogue["time"] > 10 and analogue["time"] <= 15:
+        elif time > 10 and time <= 15:
             coef = -5
-        elif analogue["time"] > 15 and analogue["time"] <= 30:
+        elif time > 15 and time <= 30:
             coef = 0
-        elif analogue["time"] > 30 and analogue["time"] <= 60:
+        elif time > 30 and time <= 60:
             coef = 6
-        elif analogue["time"] > 60 and analogue["time"] <= 90:
+        elif time > 60 and time <= 90:
             coef = 10
-    elif reference["proxMetro"] > 30 and reference["proxMetro"] <=60:
-        if analogue["time"] < 5:
+    elif int(reference["proxMetro"]) > 30 and int(reference["proxMetro"]) <=60:
+        if time < 5:
             coef = -19
-        elif analogue["time"] > 5 and analogue["time"] <= 10:
+        elif time > 5 and time <= 10:
             coef = -13
-        elif analogue["time"] > 10 and analogue["time"] <= 15:
+        elif time > 10 and time <= 15:
             coef = -10
-        elif analogue["time"] > 15 and analogue["time"] <= 30:
+        elif time > 15 and time <= 30:
             coef = -6
-        elif analogue["time"] > 30 and analogue["time"] <= 60:
+        elif time > 30 and time <= 60:
             coef = 0
-        elif analogue["time"] > 60 and analogue["time"] <= 90:
+        elif time > 60 and time <= 90:
             coef = 4
-    elif reference["proxMetro"] > 60 and reference["proxMetro"] <=90:
-        if analogue["time"] < 5:
+    elif int(reference["proxMetro"]) > 60 and int(reference["proxMetro"]) <=90:
+        if time < 5:
             coef = -22
-        elif analogue["time"] > 5 and analogue["time"] <= 10:
+        elif time > 5 and time <= 10:
             coef = -17
-        elif analogue["time"] > 10 and analogue["time"] <= 15:
+        elif time > 10 and time <= 15:
             coef = -13
-        elif analogue["time"] > 15 and analogue["time"] <= 30:
+        elif time > 15 and time <= 30:
             coef = -9
-        elif analogue["time"] > 30 and analogue["time"] <= 60:
+        elif time > 30 and time <= 60:
             coef = -4
-        elif analogue["time"] > 60 and analogue["time"] <= 90:
+        elif time > 60 and time <= 90:
             coef = 0
     price = price + (coef * price / 100)
-    history.append({"id":analogue["id"], "discription": "Корректировка на удаленность от метро", "price": int(price), "coef": coef})
+    history.append({"id":generateID(), "discription": "Корректировка на удаленность от метро", "price": int(price), "coef": coef})
     if reference["structure"] == "без отделки":
         if analogue["repair"] == "без отделки":
             coef = 0
@@ -286,7 +295,7 @@ def calc_coeff(_price, analogue, reference):
     clone_price = price
     price = price - coef
     clone_coef = round((coef*100)/clone_price, 1)
-    history.append({"id":analogue["id"], "discription": "Корректировка на ремонт", "price": int(price), "coef": clone_coef})
+    history.append({"id":generateID(), "discription": "Корректировка на ремонт", "price": int(price), "coef": clone_coef})
     dif = max = size_coef = 0
     min = 100;
     for coef in history:

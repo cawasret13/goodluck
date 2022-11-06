@@ -145,17 +145,36 @@ class selectionAnalogs(APIView):
 class Calculation(APIView):
     def post(self, request, format=False):
         reports = []
-        id_session = self.request.data.get('id_session')
         ids_analogs = []
+        id_session = self.request.data.get('id_session')
         ids = self.request.data.get('ids_analogs').split(',')
         for id in ids:
             ids_analogs.append(id)
         data = FileData.objects.get(id_session=id_session)
         data.ids_analogs = ids_analogs
         data.save()
-        reports.append(calculate_price(id_session))
+        for reference in ast.literal_eval(FileData.objects.get(id_session=id_session).id_reference):
+            ids_analogues=[]
+            for id_analogue in ids:
+                if int(id_analogue) >= int(reference) * 10 and (int(reference) + 1)*10 > int(id_analogue):
+                    ids_analogues.append(int(id_analogue))
+            reports.append(calculate_price(id_session, reference, ids_analogues))
         data = FileData.objects.get(id_session=id_session)
         data.report = reports
         data.save()
-        print(reports)
-        return Response(reports)
+        return Response(json.dumps(reports))
+
+class ChangeCoef(APIView):
+    def get(self, request, format=None):
+        id_session = self.request.query_params.get('id_session')
+        new_coef = self.request.query_params.get('new')
+        id_coef = self.request.query_params.get('id')
+        data = FileData.objects.get(id_session = id_session)
+        for rep in  ast.literal_eval(data.report):
+            for desc in rep['report']:
+                for id in desc['coefficient']:
+                    if id['id'] == id_coef:
+                        id['coef'] = new_coef
+        
+        print(id_session, new_coef, id_coef)
+        return Response("0")

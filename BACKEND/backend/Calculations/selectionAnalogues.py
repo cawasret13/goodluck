@@ -268,6 +268,7 @@ def sortingAnalogs(analogs, id_session, id_reference):
     coor_select = (float(pos_select.split(' ')[0]),float(pos_select.split(' ')[1]))
     selectApart['coordinates'] = [float(pos_select.split(' ')[0]),float(pos_select.split(' ')[1])]
     for apart in analogs:
+        time.sleep(0.2)
         if apart['info']['rooms'] != ' ':
             if int(apart['info']['rooms']) == int(selectApart['numRooms']) \
                     and (int(apart['info']['totalFloor']) == int(selectApart['floorsHouse'])) and apart not in list and apart["info"]["repair"] != ' ' \

@@ -1,3 +1,4 @@
+import random
 from soupsieve.util import lower
 
 def transliterate(text):
@@ -16,3 +17,9 @@ def transliterate(text):
     if 'pereulok_' in result:
         result = result.replace('pereulok_', '') + '_pereulok'
     return lower(result.replace('.', ''))
+def generateID():
+    id=''
+    for x in range(10):
+        id = id + random.choice(
+            list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_|'))
+    return id
