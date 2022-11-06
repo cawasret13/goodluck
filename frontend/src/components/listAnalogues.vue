@@ -31,7 +31,6 @@
                     </swiper>
                 </div>
                 <div class="info">
-                    <div class="character"><h4>id</h4><h4>{{info["info"]["id"]}}</h4></div>
                     <div class="character"><h4>Адрес</h4><h4>{{info["info"]["address"]}}</h4></div>
                     <div class="character"><h4>Цена</h4><h4>{{info["info"]["price"]}}₽</h4></div>
                     <div class="character"><h4>Комнаты</h4><h4>{{info["info"]["rooms"]}}</h4></div>

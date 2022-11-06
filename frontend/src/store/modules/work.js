@@ -9,6 +9,7 @@ export default{
         selectAnalog:[],
         history:[],
         url: 'http://localhost:8000',
+        report: [],
     },
     getters:{
         getLoad(state){
@@ -38,6 +39,9 @@ export default{
         getInfoReference: (state) => (id) => {
             return state.dataFile.find(thing => thing.id === id)
         },
+        getReport(state){
+            return state.report
+        }
     },
     mutations:{
         LoadFile(state, file){
@@ -73,6 +77,12 @@ export default{
             }
             console.log(state.selectAnalog)
         },
+        NewHistory(state, data){
+            state.history = data
+        },
+        report(state, data){
+            state.report = data
+        }
     },
     actions:{
         async loadFile(ctx, file){
