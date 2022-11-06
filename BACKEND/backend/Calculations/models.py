@@ -9,6 +9,8 @@ class FileData(models.Model):
     data_analogs = models.TextField(null=True)
     ids_analogs = models.TextField(null=True)
     report = models.TextField(null=True)
+    NewData = models.TextField(null=True)
+    EndPool = models.FileField(upload_to='Export', null=True)
 
     def __str__(self):
         return f"id_session: {self.id_session},     id_user: {self.id_user}"

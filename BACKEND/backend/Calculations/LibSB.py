@@ -1,4 +1,6 @@
 import random
+
+import openpyxl
 from soupsieve.util import lower
 
 def transliterate(text):
@@ -23,3 +25,8 @@ def generateID():
         id = id + random.choice(
             list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_|'))
     return id
+
+def createFile(id_session):
+    book = openpyxl.Workbook()
+    sheet = book.active
+    sheet["A1"] = "Локация"

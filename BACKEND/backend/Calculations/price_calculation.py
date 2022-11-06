@@ -1,6 +1,7 @@
 import ast
+import time
 
-from Calculations.LibSB import generateID
+from Calculations.LibSB import generateID, createFile
 from Calculations.models import FileData
 
 
@@ -314,3 +315,62 @@ def calc_coeff(_price, analogue, reference):
         "weight": 0,
     }
     return report
+
+def newPrice(id_session, ref, index):
+    data = FileData.objects.get(id_session=id_session)
+    _rep = []
+    for rep in ast.literal_eval(data.report):
+        if int(rep['id_ref']) == int(ref):
+           price = 0
+           for report in rep['report']:
+               for coef in report['coefficient']:
+                   if report['coefficient'].index(coef) != 0:
+                        coef['price'] = (int(report['coefficient'][report['coefficient'].index(coef) -1]["price"]) + int(float(coef["coef"]) *  int(report['coefficient'][report['coefficient'].index(coef) -1]["price"]) / 100))
+                        price = coef['price']
+               report['price'] = price
+        _rep.append(rep)
+    min = 1000
+    max = 0
+    all_w = 0
+    price_meter = 0
+    for rep in _rep:
+        for report in rep['report']:
+            size = 0
+            for coef in report['coefficient']:
+                if float(coef['coef']) > max:
+                    max = float(coef['coef'])
+                if float(coef['coef']) < min:
+                    min = float(coef['coef'])
+                size += abs(float(coef['coef']))
+            report['size'] = size
+            if max != 0:
+                dif = max - min
+            else:
+                dif = 0
+            report['difference'] = dif
+            all_w+= 1/float(report['size'])
+        for report in rep['report']:
+            report['weight'] = (round((1/report['size'])/all_w, 2))
+            price_meter += report['weight'] * report['price']
+        rep['priceMeter'] = int(price_meter)
+        refs = ast.literal_eval(data.data)[int(rep['id_ref'])]['areaApart'] * rep['priceMeter']
+        rep['price'] = refs
+    data.report =_rep
+    data.save()
+    return _rep
+
+def Pool(id_session):
+    data = FileData.objects.get(id_session=id_session)
+    _file = ast.literal_eval(data.data)
+    Report = ast.literal_eval(data.report)
+    _objects =[]
+    for object in Report:
+        for file in _file:
+            if int(file["numRooms"]) == int(_file[object['id_ref']]["numRooms"]):
+                file["price"] = int(float(file['areaApart']) * int(object['priceMeter']))
+                _objects.append(file)
+
+    data.NewData = _objects
+    data.EndPool = createFile(id_session)
+    data.save()
+    return _objects

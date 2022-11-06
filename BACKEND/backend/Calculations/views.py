@@ -7,7 +7,7 @@ from Calculations.models import FileData
 import random
 import openpyxl
 
-from Calculations.price_calculation import calculate_price
+from Calculations.price_calculation import calculate_price, newPrice, Pool
 from Calculations.selectionAnalogues import AnalogsMirCvartir, AnalogsMove, sortingAnalogs
 
 
@@ -58,6 +58,7 @@ def read_open(id_session):
                     "proxMetro": worksheet.cell(row=y, column=10).value,
                     "structure": worksheet.cell(row=y, column=11).value,
                     "coordinates": '',
+                    "price": '',
                 }
                 id += 1
                 lot.append(data)
@@ -98,7 +99,6 @@ class selectionAnalogs(APIView):
     def post(self, request, format=None):
         id_session = request.data.get('id_session')
         id_referens = request.data.get('id_ref')
-        print(id_session, id_referens)
         arrFile = FileData.objects.get(id_session=id_session)
         arrFile.id_reference = id_referens
         arrFile.save()
@@ -110,16 +110,12 @@ class selectionAnalogs(APIView):
         id_session = self.request.query_params.get('id_session')
         DataSession = FileData.objects.filter(id_session=id_session)[0]
         data = ast.literal_eval(DataSession.id_reference)
-        print(data)
-        print("start parsing")
         for id_reference in data:
             Apart.append({"analog":AnalogsMirCvartir(id_session, int(id_reference))})
             Apart.append({"analog":AnalogsMove(id_session, int(id_reference))})
-        print("end parsing")
         for analog in Apart:
             for info in analog["analog"]:
                 GlobalApart.append(info)
-        print("start sort")
         print(GlobalApart)
         list = []
         for id_reference in data:
@@ -166,15 +162,25 @@ class Calculation(APIView):
 
 class ChangeCoef(APIView):
     def get(self, request, format=None):
+        _report = []
         id_session = self.request.query_params.get('id_session')
         new_coef = self.request.query_params.get('new')
         id_coef = self.request.query_params.get('id')
         data = FileData.objects.get(id_session = id_session)
-        for rep in  ast.literal_eval(data.report):
+        id_ref = 0
+        for rep in ast.literal_eval(data.report):
             for desc in rep['report']:
                 for id in desc['coefficient']:
                     if id['id'] == id_coef:
                         id['coef'] = new_coef
-        
-        print(id_session, new_coef, id_coef)
-        return Response("0")
+                        id_ref = rep['id_ref']
+                        index = desc['coefficient'].index(id)
+            _report.append(rep)
+        data.report = _report
+        data.save()
+        return Response(json.dumps(newPrice(id_session, id_ref, index)))
+
+class  CalculationsPool(APIView):
+    def get(self, request, format=False):
+        id_session = self.request.query_params.get('id_session')
+        return Response(Pool(id_session))
